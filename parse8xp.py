@@ -56,7 +56,7 @@ def decompile(source8xp, destination):
                 writeFile.write("%s\n%sprotected\n%s\n" % (name, protect, comment))
                 _logger.info("Loading %s...", name)
                 _logger.info("Program is %sprotected", protect)
-                _logger.info(comment)
+                _logger.info("%s", comment)
                 # Find data's end
                 readFile.seek(-3, 2)
                 fileLength = readFile.tell()
@@ -73,7 +73,7 @@ def decompile(source8xp, destination):
                         current = readFile.read(readLen)
                     if tDict.has_key(current):
                         writeFile.write(tDict[current])
-                        #_logger.debug(tDict[current])
+                        #_logger.debug("%s", tDict[current])
                     else:
                         writeFile.write("&@%s" % current)
                         _logger.warning("character %x not found!", ord(current))
@@ -142,11 +142,11 @@ def recompile(source, destination8xp):
                             writeBuffer.append(current)
                         # B) This is an invalid escape sequence. Let's announce that.
                         else:
-                            _logger.warning("%s is an invalid escape sequence on line %s", current, lineNum)
+                            _logger.warning("%s is an invalid escape sequence on line %d", current, lineNum)
                             writeBuffer.append("ERROR %s" % current)
                     else:
                         # A character is unreadable!
-                        _logger.warning("%s not found on line &s", current, lineNum)
+                        _logger.warning("%s not found on line %d", current, lineNum)
                         writeBuffer.append("ERROR %s" % current)
                 programMeat="".join(writeBuffer)
                 # Comment Code
@@ -242,7 +242,7 @@ def spellcheck(filename):
                         writeBuffer.append((current, lineNum))
                     # B) This is an invalid escape sequence. Let's announce that.
                     else:
-                        _logger.warning("%s is an invalid escape sequence on line %s", current, lineNum)
+                        _logger.warning("%s is an invalid escape sequence on line %d", current, lineNum)
                         writeBuffer.append((current, lineNum))
                 else:
                     # A character is unreadable!
@@ -258,7 +258,7 @@ def spellcheck(filename):
 ##                    lineNum += 1
 ##                if raw.has_key(currentraw) and len(current) <= len(raw[currentraw]) and (not tDict.has_key(current)) and (not raw[currentraw] == current):
 ##                    #This is the definition of a spelling error...
-##                    _logger.warning("%s '%s'? found on line %s", current, raw[rawize(current)], lineNum)
+##                    _logger.warning("%s '%s'? found on line %d", current, raw[rawize(current)], lineNum)
             _logger.info("File loaded. Analyzing...")
             for item in writeBuffer:
                 if rawize(item[0]):
@@ -272,7 +272,7 @@ def spellcheck(filename):
                         current = "%s%s" % (current, writeBuffer[i][0])
                         i+=1
                         #full_list.append(current)
-                        #_logger.debug(current)
+                        #_logger.debug("%s", current)
                     # Step 2: Reduce the chunk
                     original = current
                     while current and not raw.has_key(current):
