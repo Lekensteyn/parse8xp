@@ -78,16 +78,16 @@ def decompile(source8xp, destination):
                         writeFile.write("&@%s" % current)
                         _logger.warning("character %x not found!", ord(current))
                 _logger.info("%s successfully decompiled as %s", source8xp, destination)
-            except IOError:
-                _logger.error("A file error occurred during translation")
+            except IOError as e:
+                _logger.error("A file error occurred during translation: %s", e)
             finally:
                 writeFile.close()
-        except IOError:
-            _logger.error("Error creating %s!", destination)
+        except IOError as e:
+            _logger.error("Error creating %s: %s", destination, e)
         finally:
             readFile.close()
-    except IOError:
-        _logger.error("Error loading %s!", source8xp)
+    except IOError as e:
+        _logger.error("Error loading %s: %s", source8xp, e)
 
 def recompile(source, destination8xp):
     """Open a text file, compile it as an 8xp.
@@ -182,16 +182,16 @@ def recompile(source, destination8xp):
                 # Checksum - sum of all characters in program
                 writeFile.write(twoByte(sum([ord(c) for c in programMeat])))
                 _logger.info("%s successfully compiled as %s", source, destination8xp)
-            except IOError:
-                _logger.error("A file error occurred during translation")
+            except IOError as e:
+                _logger.error("A file error occurred during translation: %s", e)
             finally:
                 writeFile.close()
-        except IOError:
-            _logger.error("Error creating %s!", destination)
+        except IOError as e:
+            _logger.error("Error creating %s: %s", destination8xp, e)
         finally:
             readFile.close()
-    except IOError:
-        _logger.error("Error loading %s!", source8xp)
+    except IOError as e:
+        _logger.error("Error loading %s: %s", source, e)
 
 def spellcheck(filename):
     """This function will perform a spell check operation on the indicated file,
