@@ -25,7 +25,16 @@ You can also get help on anything by typing
     gethelp('COMMAND YOU WANT HELP ON')
 
 Basically, the point of this is so you can use any text editor to modify your
-programs
+programs. Alternatively, you can use the example `main.py` as shortcut in a
+terminal:
+
+    python main.py path/to/FILE.8xp path/to/output/file.txt
+    python main.py path/to/SOURCE   path/to/output/file.8xp
+
+## Python 3
+The tool was originally written for Python 2, it partially works with Python 3
+due to differences in interpreting strings (unicode versus bytes). `compile` and
+`recompile` work in Python 3, `gethelp` and `spellcheck` do not.
 
 ## License
 Citing [the forum post][0]:
