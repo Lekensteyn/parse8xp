@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 def index():
     return ('stat', 'finance', 'ti84plus')
 
