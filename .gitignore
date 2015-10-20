@@ -1,0 +1,4 @@
+*.8[Xx][Pp]
+*.py[co]
+__pycache__/
+.*.sw?
