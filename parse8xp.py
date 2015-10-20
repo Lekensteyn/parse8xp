@@ -61,19 +61,23 @@ def decompile(source8xp, destination):
     tDict = loadDict(dictType="decompile")
     maxKeyLen = longestKey(tDict)
     try:
-        readFile=open(source8xp, "r")
+        readFile=open(source8xp, "rb")
         try:
-            writeFile=open(destination, "w")
+            writeFile=open(destination, "wb")
             try:
                 # Load program name, protection type, and comment
                 readFile.seek(11, 0)
                 comment = readFile.read(42)
                 readFile.seek(59, 0)
-                protect = readFile.read(1) == "\x05" and "not " or ""
+                protect = readFile.read(1) != b"\x05"
                 name = readFile.read(8)
-                writeFile.write("%s\n%sprotected\n%s\n" % (name, protect, comment))
+                writeFile.write(name + b"\n")
+                if not protect:
+                    writeFile.write(b"not ")
+                writeFile.write(b"protected\n")
+                writeFile.write(comment + b"\n")
                 _logger.info("Loading %s...", name)
-                _logger.info("Program is %sprotected", protect)
+                _logger.info("Program is %sprotected", protect and "not " or "")
                 _logger.info("%s", comment)
                 # Find data's end
                 readFile.seek(-3, 2)
@@ -85,11 +89,11 @@ def decompile(source8xp, destination):
                     readLen = min([maxKeyLen, readLen])
                     current = readFile.read(readLen)
                       # Try each possible key for the next few characters
-                    while (readLen > 1 and not tDict.has_key(current)):
+                    while (readLen > 1 and not current in tDict):
                         readFile.seek(-1*readLen, 1)
                         readLen -= 1
                         current = readFile.read(readLen)
-                    if tDict.has_key(current):
+                    if current in tDict:
                         writeFile.write(tDict[current])
                         #_logger.debug("%s", tDict[current])
                     else:
@@ -293,10 +297,10 @@ def spellcheck(filename):
                         #_logger.debug("%s", current)
                     # Step 2: Reduce the chunk
                     original = current
-                    while current and not raw.has_key(current):
+                    while current and not current in raw:
                         current = current[:-1]
                     # Step 3: Report.
-                    if raw.has_key(rawize(current)) and original[:len(raw[rawize(current)])] != raw[rawize(current)] and not tDict.has_key(current):
+                    if rawize(current) in raw and original[:len(raw[rawize(current)])] != raw[rawize(current)] and not current in tDict:
                         # A spelling error is a word found misspelled
                         _logger.warning("%s (Line %4d): '%s'", original.replace("\n", " ").replace("\r", "").ljust(maxKeyLen)[:maxKeyLen], item[1], raw[rawize(current)])
         except IOError:
@@ -309,7 +313,7 @@ def spellcheck(filename):
 def gethelp(command, results=20):
     """Print help with a command to terminal"""
     tDict = loadDict(dictType="help")
-    if tDict.has_key(command):
+    if command in tDict:
         print(tDict[command] or "No help available")
     else:
         print("%s not found" % command)
